@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import LetterCard from '@/components/atoms/LetterCard';
-import letterService from '@/services/api/letterService';
-import progressService from '@/services/api/progressService';
-
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import audioService from "@/services/audioService";
+import letterService from "@/services/api/letterService";
+import progressService from "@/services/api/progressService";
+import ApperIcon from "@/components/ApperIcon";
+import LetterCard from "@/components/atoms/LetterCard";
+import Button from "@/components/atoms/Button";
 const LetterSoundGame = ({ onComplete, onBack }) => {
   const [gameState, setGameState] = useState('playing'); // playing, correct, wrong, complete
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -15,7 +15,8 @@ const LetterSoundGame = ({ onComplete, onBack }) => {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [loading, setLoading] = useState(true);
   const [letters, setLetters] = useState([]);
-
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
   const totalQuestions = 5;
 
   useEffect(() => {
@@ -55,24 +56,27 @@ const LetterSoundGame = ({ onComplete, onBack }) => {
     setGameState('playing');
   };
 
-  const handleAnswer = async (selectedLetter) => {
+const handleAnswer = async (selectedLetter) => {
+    if (gameState !== 'playing') return;
+    
     const isCorrect = selectedLetter.Id === currentQuestion.Id;
+    setSelectedAnswer(selectedLetter);
+    setGameState(isCorrect ? 'correct' : 'wrong');
+    
+    // Play sound for the selected letter with error handling
+    try {
+      await playLetterSound(selectedLetter);
+    } catch (error) {
+      // Don't block game flow if audio fails
+      console.warn('Audio playback failed, continuing game:', error);
+    }
     
     if (isCorrect) {
-      setGameState('correct');
       setScore(score + 1);
-      
-      // Award progress
-      try {
-        await progressService.addCompletedLetter(selectedLetter.Id);
-        await progressService.awardStars(1);
-      } catch (error) {
-        console.error('Failed to update progress:', error);
-      }
-    } else {
-      setGameState('wrong');
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 2000);
     }
-
+    
     // Move to next question after delay
     setTimeout(() => {
       const newQuestionsAnswered = questionsAnswered + 1;
@@ -89,19 +93,26 @@ const LetterSoundGame = ({ onComplete, onBack }) => {
     }, 1500);
   };
 
-  const playLetterSound = async (letter) => {
+const playLetterSound = async (letter) => {
     try {
-      await letterService.playSound(letter.Id);
-      // In a real app, this would play actual audio
-      console.log(`Playing sound for letter: ${letter.character}`);
+      if (letter.Id) {
+        await letterService.playSound(letter.Id);
+      } else {
+        const audioUrl = `/sounds/letters/${letter.character?.toLowerCase() || 'a'}.mp3`;
+        await audioService.playSound(audioUrl);
+      }
     } catch (error) {
-      console.error('Failed to play sound:', error);
+      console.error('Error playing letter sound:', error);
+      toast.warn(`Could not play sound for letter "${letter.character || letter}"`, {
+        position: 'bottom-right',
+        autoClose: 3000
+      });
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center min-h-[400px]">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

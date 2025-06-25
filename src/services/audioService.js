@@ -1,4 +1,9 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
+import activitiesData from "@/services/mockData/activities.json";
+import progressData from "@/services/mockData/progress.json";
+import lettersData from "@/services/mockData/letters.json";
+import wordsData from "@/services/mockData/words.json";
 
 class AudioService {
   constructor() {
@@ -43,14 +48,9 @@ class AudioService {
   }
 
   async preloadAudio(audioUrl) {
-    if (!audioUrl) return null;
-
-    try {
-      await this.initialize();
-
-      // Check if already loaded
+try {
       if (this.audioBuffers.has(audioUrl) || this.audioElements.has(audioUrl)) {
-        return true;
+        return true; // Already preloaded
       }
 
       if (this.audioContext) {
@@ -64,19 +64,80 @@ class AudioService {
         const audioBuffer = await this.audioContext.decodeAudioData(audioData);
         this.audioBuffers.set(audioUrl, audioBuffer);
       } else {
-        // Use HTML5 Audio as fallback
-        const audio = new Audio(audioUrl);
-        audio.preload = 'auto';
-        audio.volume = this.isMuted ? 0 : this.volume;
+        // Use HTML5 Audio as fallback with retry mechanism
+        let lastError = null;
+        const maxRetries = 3;
         
-        // Wait for audio to be ready
-        await new Promise((resolve, reject) => {
-          audio.addEventListener('canplaythrough', resolve, { once: true });
-          audio.addEventListener('error', reject, { once: true });
-          audio.load();
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            const audio = new Audio(audioUrl);
+            audio.preload = 'auto';
+            audio.volume = this.isMuted ? 0 : this.volume;
+            
+            // Wait for audio to be ready with timeout
+            await new Promise((resolve, reject) => {
+              const timeout = setTimeout(() => {
+                reject(new Error(`Audio preload timeout after 10 seconds (attempt ${attempt}/${maxRetries})`));
+              }, 10000);
+              
+              const cleanup = () => {
+                clearTimeout(timeout);
+                audio.removeEventListener('canplaythrough', onSuccess);
+                audio.removeEventListener('error', onError);
+              };
+              
+              const onSuccess = () => {
+                cleanup();
+                resolve();
+              };
+              
+              const onError = (event) => {
+                cleanup();
+                const errorMessage = audio.error 
+                  ? `Audio error (code: ${audio.error.code}): ${this._getAudioErrorMessage(audio.error.code)}`
+                  : 'Unknown audio loading error';
+                reject(new Error(`${errorMessage} (attempt ${attempt}/${maxRetries})`));
+              };
+              
+              audio.addEventListener('canplaythrough', onSuccess, { once: true });
+              audio.addEventListener('error', onError, { once: true });
+              
+              // Check network connectivity
+              if (!navigator.onLine) {
+                reject(new Error('No network connection available for audio loading'));
+                return;
+              }
+              
+              audio.load();
+            });
+            
+            // Success - store and exit retry loop
+            this.audioElements.set(audioUrl, audio);
+            if (attempt > 1) {
+              console.log(`Audio preload succeeded on attempt ${attempt}:`, audioUrl);
+            }
+            return true;
+            
+          } catch (error) {
+            lastError = error;
+            console.warn(`Audio preload attempt ${attempt}/${maxRetries} failed:`, error.message);
+            
+            // Wait before retry (exponential backoff)
+            if (attempt < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 500));
+            }
+          }
+        }
+        
+        // All retries failed - log error but don't throw to allow graceful degradation
+        console.error(`Failed to preload audio after ${maxRetries} attempts:`, audioUrl, lastError?.message);
+        toast.warn('Audio may not be available for some sounds', { 
+          position: 'bottom-right',
+          autoClose: 3000 
         });
         
-        this.audioElements.set(audioUrl, audio);
+        // Store null to indicate failed preload but prevent repeated attempts
+        this.audioElements.set(audioUrl, null);
       }
 
       return true;
@@ -85,8 +146,7 @@ class AudioService {
       return false;
     }
   }
-
-  async playSound(audioUrl) {
+async playSound(audioUrl) {
     if (!audioUrl || this.isMuted) return false;
 
     try {
@@ -104,26 +164,26 @@ class AudioService {
         // Use Web Audio API
         const audioBuffer = this.audioBuffers.get(audioUrl);
         const source = this.audioContext.createBufferSource();
-        const gainNode = this.audioContext.createGain();
-        
         source.buffer = audioBuffer;
-        gainNode.gain.value = this.volume;
-        
-        source.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
+        source.connect(this.audioContext.destination);
         source.start(0);
-      } else if (this.audioElements.has(audioUrl)) {
+      } else {
         // Use HTML5 Audio
         const audio = this.audioElements.get(audioUrl);
-        audio.currentTime = 0;
-        audio.volume = this.volume;
-        await audio.play();
-      } else {
-        // Last resort - create new audio element
-        const audio = new Audio(audioUrl);
-        audio.volume = this.volume;
-        await audio.play();
+        if (audio === null) {
+          // Audio failed to preload - provide user feedback
+          console.warn('Audio not available:', audioUrl);
+          toast.info('Audio not available for this sound', { 
+            position: 'bottom-right',
+            autoClose: 2000 
+          });
+          return false;
+        }
+        
+        if (audio) {
+          audio.currentTime = 0; // Reset to beginning
+          await audio.play();
+        }
       }
 
       return true;
@@ -141,12 +201,23 @@ class AudioService {
     }
   }
 
-  setVolume(volume) {
+  _getAudioErrorMessage(errorCode) {
+    const errorMessages = {
+      1: 'MEDIA_ERR_ABORTED - Audio loading was aborted',
+      2: 'MEDIA_ERR_NETWORK - Network error occurred while loading audio',
+      3: 'MEDIA_ERR_DECODE - Audio decoding error',
+      4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - Audio format not supported'
+    };
+    return errorMessages[errorCode] || `Unknown error code: ${errorCode}`;
+  }
+setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
     
     // Update existing HTML5 audio elements
     this.audioElements.forEach(audio => {
-      audio.volume = this.isMuted ? 0 : this.volume;
+      if (audio && typeof audio.volume !== 'undefined') {
+        audio.volume = this.isMuted ? 0 : this.volume;
+      }
     });
   }
 
@@ -157,14 +228,18 @@ class AudioService {
   mute() {
     this.isMuted = true;
     this.audioElements.forEach(audio => {
-      audio.volume = 0;
+      if (audio && typeof audio.volume !== 'undefined') {
+        audio.volume = 0;
+      }
     });
   }
 
   unmute() {
     this.isMuted = false;
     this.audioElements.forEach(audio => {
-      audio.volume = this.volume;
+      if (audio && typeof audio.volume !== 'undefined') {
+        audio.volume = this.volume;
+      }
     });
   }
 
@@ -186,12 +261,14 @@ class AudioService {
   }
 
   // Clean up resources
-  cleanup() {
+cleanup() {
     this.audioBuffers.clear();
     this.audioElements.forEach(audio => {
-      audio.pause();
-      audio.removeAttribute('src');
-      audio.load();
+      if (audio && typeof audio.pause === 'function') {
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+      }
     });
     this.audioElements.clear();
     

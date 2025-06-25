@@ -1,43 +1,30 @@
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import ApperIcon from '@/components/ApperIcon';
-import audioService from '@/services/audioService';
-const LetterCard = ({ 
+import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import audioService from "@/services/audioService";
+import ApperIcon from "@/components/ApperIcon";
+
+export default function LetterCard({ 
   letter, 
   onClick, 
   isCompleted = false, 
+  size = 'medium',
+  className = '',
   showSound = true,
-  size = 'large',
-  className = ''
+  playSound = true
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-const handleClick = async () => {
-    if (onClick) {
-      setIsPlaying(true);
-      
-      // Play the letter sound
-      if (letter.audioUrl) {
-        await audioService.playSound(letter.audioUrl);
-      }
-      
-      // Call the parent onClick handler
-      await onClick(letter);
-      
-      setTimeout(() => setIsPlaying(false), 1000);
-    }
-  };
+const [isPlaying, setIsPlaying] = useState(false);
 
   const sizeClasses = {
-    small: 'w-16 h-16 text-2xl',
-    medium: 'w-20 h-20 text-3xl',
-    large: 'w-24 h-24 md:w-28 md:h-28 text-4xl md:text-5xl'
+    small: 'w-16 h-16 text-lg',
+    medium: 'w-20 h-20 text-xl',
+    large: 'w-24 h-24 text-2xl'
   };
 
   const cardVariants = {
-    initial: { scale: 1, rotate: 0 },
-    hover: { scale: 1.05, rotate: 1 },
-    tap: { scale: 0.95, rotate: -1 },
+    initial: { scale: 1 },
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    tap: { scale: 0.95, transition: { duration: 0.1 } },
     playing: { 
       scale: [1, 1.2, 1], 
       rotate: [0, 5, -5, 0],
@@ -45,6 +32,28 @@ const handleClick = async () => {
     }
   };
 
+  const handleClick = async () => {
+    if (onClick) {
+      onClick(letter);
+    }
+
+    if (playSound) {
+      try {
+        setIsPlaying(true);
+        const audioUrl = letter.audioUrl || `/sounds/letters/${letter.character?.toLowerCase()}.mp3`;
+        await audioService.playSound(audioUrl);
+      } catch (error) {
+        console.error('Error playing letter sound:', error);
+        toast.error(`Audio not available for "${letter.character}"`, {
+          position: 'bottom-right',
+          autoClose: 2000,
+          hideProgressBar: true
+        });
+      } finally {
+        setIsPlaying(false);
+      }
+    }
+  };
   return (
     <motion.div
       variants={cardVariants}
@@ -117,5 +126,3 @@ const handleClick = async () => {
     </motion.div>
   );
 };
-
-export default LetterCard;
