@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import LetterGrid from "@/components/molecules/LetterGrid";
 import letterService from "@/services/api/letterService";
 import progressService from "@/services/api/progressService";
-import ApperIcon from "@/components/atoms/ApperIcon";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 const Alphabet = () => {
   const [letters, setLetters] = useState([]);

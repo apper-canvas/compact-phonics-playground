@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import GameCard from "@/components/molecules/GameCard";
 import LetterSoundGame from "@/components/organisms/LetterSoundGame";
-import ApperIcon from "@/components/atoms/ApperIcon";
+import ApperIcon from "@/components/ApperIcon";
 import progressService from "@/services/api/progressService";
 import activityService from "@/services/api/activityService";
 const Games = () => {
