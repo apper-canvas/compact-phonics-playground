@@ -1,0 +1,210 @@
+[
+  {
+    "Id": 1,
+    "character": "A",
+    "sound": "/æ/",
+    "exampleWord": "Apple",
+    "audioUrl": "/audio/letters/a.mp3",
+    "completed": true
+  },
+  {
+    "Id": 2,
+    "character": "B",
+    "sound": "/b/",
+    "exampleWord": "Ball",
+    "audioUrl": "/audio/letters/b.mp3",
+    "completed": true
+  },
+  {
+    "Id": 3,
+    "character": "C",
+    "sound": "/k/",
+    "exampleWord": "Cat",
+    "audioUrl": "/audio/letters/c.mp3",
+    "completed": false
+  },
+  {
+    "Id": 4,
+    "character": "D",
+    "sound": "/d/",
+    "exampleWord": "Dog",
+    "audioUrl": "/audio/letters/d.mp3",
+    "completed": false
+  },
+  {
+    "Id": 5,
+    "character": "E",
+    "sound": "/ɛ/",
+    "exampleWord": "Elephant",
+    "audioUrl": "/audio/letters/e.mp3",
+    "completed": false
+  },
+  {
+    "Id": 6,
+    "character": "F",
+    "sound": "/f/",
+    "exampleWord": "Fish",
+    "audioUrl": "/audio/letters/f.mp3",
+    "completed": false
+  },
+  {
+    "Id": 7,
+    "character": "G",
+    "sound": "/g/",
+    "exampleWord": "Goat",
+    "audioUrl": "/audio/letters/g.mp3",
+    "completed": false
+  },
+  {
+    "Id": 8,
+    "character": "H",
+    "sound": "/h/",
+    "exampleWord": "Hat",
+    "audioUrl": "/audio/letters/h.mp3",
+    "completed": false
+  },
+  {
+    "Id": 9,
+    "character": "I",
+    "sound": "/ɪ/",
+    "exampleWord": "Ice",
+    "audioUrl": "/audio/letters/i.mp3",
+    "completed": false
+  },
+  {
+    "Id": 10,
+    "character": "J",
+    "sound": "/dʒ/",
+    "exampleWord": "Jump",
+    "audioUrl": "/audio/letters/j.mp3",
+    "completed": false
+  },
+  {
+    "Id": 11,
+    "character": "K",
+    "sound": "/k/",
+    "exampleWord": "Kite",
+    "audioUrl": "/audio/letters/k.mp3",
+    "completed": false
+  },
+  {
+    "Id": 12,
+    "character": "L",
+    "sound": "/l/",
+    "exampleWord": "Lion",
+    "audioUrl": "/audio/letters/l.mp3",
+    "completed": false
+  },
+  {
+    "Id": 13,
+    "character": "M",
+    "sound": "/m/",
+    "exampleWord": "Mouse",
+    "audioUrl": "/audio/letters/m.mp3",
+    "completed": false
+  },
+  {
+    "Id": 14,
+    "character": "N",
+    "sound": "/n/",
+    "exampleWord": "Nest",
+    "audioUrl": "/audio/letters/n.mp3",
+    "completed": false
+  },
+  {
+    "Id": 15,
+    "character": "O",
+    "sound": "/ɒ/",
+    "exampleWord": "Orange",
+    "audioUrl": "/audio/letters/o.mp3",
+    "completed": false
+  },
+  {
+    "Id": 16,
+    "character": "P",
+    "sound": "/p/",
+    "exampleWord": "Pig",
+    "audioUrl": "/audio/letters/p.mp3",
+    "completed": false
+  },
+  {
+    "Id": 17,
+    "character": "Q",
+    "sound": "/kw/",
+    "exampleWord": "Queen",
+    "audioUrl": "/audio/letters/q.mp3",
+    "completed": false
+  },
+  {
+    "Id": 18,
+    "character": "R",
+    "sound": "/r/",
+    "exampleWord": "Rabbit",
+    "audioUrl": "/audio/letters/r.mp3",
+    "completed": false
+  },
+  {
+    "Id": 19,
+    "character": "S",
+    "sound": "/s/",
+    "exampleWord": "Sun",
+    "audioUrl": "/audio/letters/s.mp3",
+    "completed": false
+  },
+  {
+    "Id": 20,
+    "character": "T",
+    "sound": "/t/",
+    "exampleWord": "Tree",
+    "audioUrl": "/audio/letters/t.mp3",
+    "completed": false
+  },
+  {
+    "Id": 21,
+    "character": "U",
+    "sound": "/ʌ/",
+    "exampleWord": "Umbrella",
+    "audioUrl": "/audio/letters/u.mp3",
+    "completed": false
+  },
+  {
+    "Id": 22,
+    "character": "V",
+    "sound": "/v/",
+    "exampleWord": "Van",
+    "audioUrl": "/audio/letters/v.mp3",
+    "completed": false
+  },
+  {
+    "Id": 23,
+    "character": "W",
+    "sound": "/w/",
+    "exampleWord": "Water",
+    "audioUrl": "/audio/letters/w.mp3",
+    "completed": false
+  },
+  {
+    "Id": 24,
+    "character": "X",
+    "sound": "/ks/",
+    "exampleWord": "Box",
+    "audioUrl": "/audio/letters/x.mp3",
+    "completed": false
+  },
+  {
+    "Id": 25,
+    "character": "Y",
+    "sound": "/j/",
+    "exampleWord": "Yellow",
+    "audioUrl": "/audio/letters/y.mp3",
+    "completed": false
+  },
+  {
+    "Id": 26,
+    "character": "Z",
+    "sound": "/z/",
+    "exampleWord": "Zebra",
+    "audioUrl": "/audio/letters/z.mp3",
+    "completed": false
+  }
+]

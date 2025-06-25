@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "text": "CAT",
+    "letters": ["C", "A", "T"],
+    "audioUrl": "/audio/words/cat.mp3",
+    "imageUrl": "/images/words/cat.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 2,
+    "text": "DOG",
+    "letters": ["D", "O", "G"],
+    "audioUrl": "/audio/words/dog.mp3",
+    "imageUrl": "/images/words/dog.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 3,
+    "text": "SUN",
+    "letters": ["S", "U", "N"],
+    "audioUrl": "/audio/words/sun.mp3",
+    "imageUrl": "/images/words/sun.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 4,
+    "text": "BAT",
+    "letters": ["B", "A", "T"],
+    "audioUrl": "/audio/words/bat.mp3",
+    "imageUrl": "/images/words/bat.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 5,
+    "text": "PIG",
+    "letters": ["P", "I", "G"],
+    "audioUrl": "/audio/words/pig.mp3",
+    "imageUrl": "/images/words/pig.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 6,
+    "text": "HAT",
+    "letters": ["H", "A", "T"],
+    "audioUrl": "/audio/words/hat.mp3",
+    "imageUrl": "/images/words/hat.png",
+    "difficulty": 1
+  },
+  {
+    "Id": 7,
+    "text": "BUS",
+    "letters": ["B", "U", "S"],
+    "audioUrl": "/audio/words/bus.mp3",
+    "imageUrl": "/images/words/bus.png",
+    "difficulty": 2
+  },
+  {
+    "Id": 8,
+    "text": "CUP",
+    "letters": ["C", "U", "P"],
+    "audioUrl": "/audio/words/cup.mp3",
+    "imageUrl": "/images/words/cup.png",
+    "difficulty": 2
+  },
+  {
+    "Id": 9,
+    "text": "FAN",
+    "letters": ["F", "A", "N"],
+    "audioUrl": "/audio/words/fan.mp3",
+    "imageUrl": "/images/words/fan.png",
+    "difficulty": 2
+  },
+  {
+    "Id": 10,
+    "text": "BED",
+    "letters": ["B", "E", "D"],
+    "audioUrl": "/audio/words/bed.mp3",
+    "imageUrl": "/images/words/bed.png",
+    "difficulty": 2
+  }
+]

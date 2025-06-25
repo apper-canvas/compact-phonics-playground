@@ -1,0 +1,10 @@
+[
+  {
+    "Id": 1,
+    "completedLetters": [1, 2],
+    "completedWords": [1],
+    "totalStars": 8,
+    "currentLevel": 2,
+    "streakDays": 3
+  }
+]
