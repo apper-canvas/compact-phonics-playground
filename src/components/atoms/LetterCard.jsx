@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ApperIcon from '@/components/ApperIcon';
-
+import audioService from '@/services/audioService';
 const LetterCard = ({ 
   letter, 
   onClick, 
@@ -12,10 +12,18 @@ const LetterCard = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const handleClick = async () => {
+const handleClick = async () => {
     if (onClick) {
       setIsPlaying(true);
+      
+      // Play the letter sound
+      if (letter.audioUrl) {
+        await audioService.playSound(letter.audioUrl);
+      }
+      
+      // Call the parent onClick handler
       await onClick(letter);
+      
       setTimeout(() => setIsPlaying(false), 1000);
     }
   };
